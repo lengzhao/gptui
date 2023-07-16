@@ -57,6 +57,7 @@ func New() *Chat {
 func NewWithClient(client *openai.Client) *Chat {
 	var out Chat
 	out.client = client
+	out.systemPrompt = os.Getenv("prompt")
 	out.req = openai.ChatCompletionRequest{
 		Model:       conf.Get("model", openai.GPT3Dot5Turbo),
 		MaxTokens:   conf.GetInt("MaxTokens", 2000),

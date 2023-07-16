@@ -7,6 +7,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/widget"
+	"github.com/lengzhao/gptui/event"
 )
 
 type AppConfig struct {
@@ -23,6 +24,7 @@ type AppConfig struct {
 	PromptsDir    string `json:"PROMPTS_DIR,omitempty"`
 	WindWidth     int    `json:"windWidth,omitempty"`
 	WindHeight    int    `json:"windHeight,omitempty"`
+	Prompt        string `json:"prompt,omitempty"`
 }
 
 var confFile string = "config.json"
@@ -116,6 +118,8 @@ func makeFormTab() fyne.CanvasObject {
 		conf.PromptsDir = s
 	}
 
+	label := widget.NewLabel("please restart to take effect")
+
 	form := &widget.Form{
 		Items: []*widget.FormItem{
 			{Text: "Theme", Widget: themeW, HintText: "App Theme"},
@@ -130,6 +134,7 @@ func makeFormTab() fyne.CanvasObject {
 			{Text: "HTTPS Proxy", Widget: httpProxy, HintText: "the https proxy"},
 			{Text: "HTTP Timeout", Widget: timeout, HintText: "the http timeout"},
 			{Text: "Prompt Dir", Widget: prompt, HintText: "prompt dir, support .json and .csv"},
+			{Text: "Note", Widget: label},
 		},
 		OnSubmit: func() {
 			// fmt.Println("Form submitted")
@@ -144,6 +149,14 @@ func makeFormTab() fyne.CanvasObject {
 			})
 		},
 	}
+	event.RegistEvent(event.ESystemPrompt, func(key event.EventID, info string) {
+		conf.Prompt = info
+		data, err := json.MarshalIndent(conf, "", " ")
+		if err != nil {
+			return
+		}
+		os.WriteFile(confFile, data, 0644)
+	})
 	return form
 }
 

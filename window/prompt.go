@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -52,7 +53,7 @@ func makeListTab() fyne.CanvasObject {
 		label.SetText(data[0].Prompt)
 	})
 	btn := widget.NewButton("Set Prompt", func() {
-		event.SendEvent(event.ESystemPrompt, label.Text)
+		event.SendEvent(event.ESystemPrompt, strings.TrimSpace(label.Text))
 	})
 	out := container.NewHSplit(list, container.NewBorder(nil, btn, nil, nil, label))
 
@@ -91,9 +92,13 @@ func loadPrompts(fn string) []PromptItem {
 	var out []PromptItem
 	if fn == "default" {
 		out = append(out, PromptItem{
-			Act:    "AI Writing Tutor",
-			Prompt: `I want you to act as an AI writing tutor. I will provide you with a student who needs help improving their writing and your task is to use artificial intelligence tools, such as natural language processing, to give the student feedback on how they can improve their composition. You should also use your rhetorical knowledge and experience about effective writing techniques in order to suggest ways that the student can better express their thoughts and ideas in written form. My first request is "I need somebody to help me edit my master's thesis."`,
-		})
+			Act:    "Not Prompt",
+			Prompt: "",
+		},
+			PromptItem{
+				Act:    "AI Writing Tutor",
+				Prompt: `I want you to act as an AI writing tutor. I will provide you with a student who needs help improving their writing and your task is to use artificial intelligence tools, such as natural language processing, to give the student feedback on how they can improve their composition. You should also use your rhetorical knowledge and experience about effective writing techniques in order to suggest ways that the student can better express their thoughts and ideas in written form. My first request is "I need somebody to help me edit my master's thesis."`,
+			})
 		return out
 	}
 	f, err := os.Open(fn)
