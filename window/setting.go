@@ -20,6 +20,9 @@ type AppConfig struct {
 	FyneFont      string `json:"FYNE_FONT,omitempty"`
 	HttpsProxy    string `json:"HTTPS_PROXY,omitempty"`
 	HttpTimeout   int    `json:"HTTP_TIMEOUT,omitempty"`
+	PromptsDir    string `json:"PROMPTS_DIR,omitempty"`
+	WindWidth     int    `json:"windWidth,omitempty"`
+	WindHeight    int    `json:"windHeight,omitempty"`
 }
 
 var confFile string = "config.json"
@@ -32,6 +35,9 @@ func makeFormTab() fyne.CanvasObject {
 		AzureEndpoint: "https://openai-poc-instance-east-us.openai.azure.com",
 		HistoryLimit:  3,
 		HttpTimeout:   20,
+		PromptsDir:    "prompts",
+		WindWidth:     1000,
+		WindHeight:    800,
 	}
 	data, err := os.ReadFile(confFile)
 	if err == nil {
@@ -42,6 +48,17 @@ func makeFormTab() fyne.CanvasObject {
 	})
 	themeW.Horizontal = true
 	themeW.SetSelected(conf.Theme)
+
+	wWidth := widget.NewEntry()
+	wWidth.SetText(strconv.Itoa(conf.WindWidth))
+	wWidth.OnChanged = func(s string) {
+		conf.WindWidth, _ = strconv.Atoi(s)
+	}
+	wHeight := widget.NewEntry()
+	wHeight.SetText(strconv.Itoa(conf.WindHeight))
+	wHeight.OnChanged = func(s string) {
+		conf.WindHeight, _ = strconv.Atoi(s)
+	}
 
 	gptTypeW := widget.NewRadioGroup([]string{"openai", "azure"}, func(t string) {
 		conf.GPTType = t
@@ -93,9 +110,17 @@ func makeFormTab() fyne.CanvasObject {
 	})
 	timeout.SetSelected(strconv.Itoa(conf.HttpTimeout))
 
+	prompt := widget.NewEntry()
+	prompt.SetText(conf.PromptsDir)
+	prompt.OnChanged = func(s string) {
+		conf.PromptsDir = s
+	}
+
 	form := &widget.Form{
 		Items: []*widget.FormItem{
 			{Text: "Theme", Widget: themeW, HintText: "App Theme"},
+			{Text: "Window Width", Widget: wWidth, HintText: "width of window"},
+			{Text: "Window Hight", Widget: wHeight, HintText: "height of window"},
 			{Text: "GPT Type", Widget: gptTypeW, HintText: "gpt type"},
 			{Text: "Openai Key", Widget: key1, HintText: "the key for openai api"},
 			{Text: "Azure Key", Widget: key2, HintText: "the key for azure api"},
@@ -104,6 +129,7 @@ func makeFormTab() fyne.CanvasObject {
 			{Text: "Chat History Limit", Widget: historyLimit, HintText: "history limit, the history will send to gpt"},
 			{Text: "HTTPS Proxy", Widget: httpProxy, HintText: "the https proxy"},
 			{Text: "HTTP Timeout", Widget: timeout, HintText: "the http timeout"},
+			{Text: "Prompt Dir", Widget: prompt, HintText: "prompt dir, support .json and .csv"},
 		},
 		OnSubmit: func() {
 			// fmt.Println("Form submitted")
