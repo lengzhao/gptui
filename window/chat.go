@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"github.com/lengzhao/gpt/event"
+	"github.com/lengzhao/gptui/event"
 )
 
 func makeHistoryBox() fyne.CanvasObject {

@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"github.com/lengzhao/conf"
-	"github.com/lengzhao/gpt/event"
+	"github.com/lengzhao/gptui/event"
 )
 
 type PromptItem struct {
@@ -62,11 +61,18 @@ func makeListTab() fyne.CanvasObject {
 
 func makeSourceTab() fyne.CanvasObject {
 	var files []string = []string{"default"}
-	dir := conf.Get("PROMPTS_DIR", "./prompts")
+	dir := conf.Get("PROMPTS_DIR", "prompts")
+	os.Mkdir(dir, 0666)
+
 	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if info.IsDir() {
+		if info == nil || info.IsDir() {
 			return nil
 		}
+		ext := filepath.Ext(path)
+		if ext != ".csv" && ext != ".json" {
+			return nil
+		}
+
 		files = append(files, path)
 		return nil
 	})
@@ -83,20 +89,20 @@ func makeSourceTab() fyne.CanvasObject {
 
 func loadPrompts(fn string) []PromptItem {
 	var out []PromptItem
+	if fn == "default" {
+		out = append(out, PromptItem{
+			Act:    "AI Writing Tutor",
+			Prompt: `I want you to act as an AI writing tutor. I will provide you with a student who needs help improving their writing and your task is to use artificial intelligence tools, such as natural language processing, to give the student feedback on how they can improve their composition. You should also use your rhetorical knowledge and experience about effective writing techniques in order to suggest ways that the student can better express their thoughts and ideas in written form. My first request is "I need somebody to help me edit my master's thesis."`,
+		})
+		return out
+	}
 	f, err := os.Open(fn)
 	if err != nil {
-		if fn == "default" {
-			out = append(out, PromptItem{
-				Act:    "AI Writing Tutor",
-				Prompt: `I want you to act as an AI writing tutor. I will provide you with a student who needs help improving their writing and your task is to use artificial intelligence tools, such as natural language processing, to give the student feedback on how they can improve their composition. You should also use your rhetorical knowledge and experience about effective writing techniques in order to suggest ways that the student can better express their thoughts and ideas in written form. My first request is "I need somebody to help me edit my master's thesis."`,
-			})
-			return out
-		}
 		fmt.Println("fail to open file:", fn, err)
 		return nil
 	}
 	defer f.Close()
-	switch path.Ext(fn) {
+	switch filepath.Ext(fn) {
 	case ".json":
 		decoder := json.NewDecoder(f)
 		err = decoder.Decode(&out)
@@ -120,13 +126,12 @@ func loadPrompts(fn string) []PromptItem {
 			out = append(out, PromptItem{Act: item[0], Prompt: item[1]})
 		}
 	default:
-		fmt.Println("unknown file type:", fn, path.Ext(fn))
+		fmt.Println("unknown file type:", fn, filepath.Ext(fn))
 
 	}
 	return out
 }
 
 func MakeRoleWindow() fyne.CanvasObject {
-	// return makeListTab()
 	return container.NewBorder(makeSourceTab(), nil, nil, nil, makeListTab())
 }

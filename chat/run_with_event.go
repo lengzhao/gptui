@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/lengzhao/gpt/event"
+	"github.com/lengzhao/gptui/event"
 )
 
 func StartWithEvent() error {

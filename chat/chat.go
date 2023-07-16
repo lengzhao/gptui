@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/lengzhao/conf"
-	"github.com/lengzhao/gpt/history"
+	"github.com/lengzhao/gptui/history"
 	"github.com/sashabaranov/go-openai"
 )
 

@@ -8,8 +8,8 @@ import (
 	"github.com/lengzhao/conf"
 	_ "github.com/lengzhao/conf/autoload"
 	_ "github.com/lengzhao/font/autoload"
-	"github.com/lengzhao/gpt/chat"
-	"github.com/lengzhao/gpt/window"
+	"github.com/lengzhao/gptui/chat"
+	"github.com/lengzhao/gptui/window"
 )
 
 func main() {
