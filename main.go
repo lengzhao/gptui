@@ -18,7 +18,7 @@ func main() {
 	w.Resize(fyne.NewSize(float32(conf.GetFloat("windWidth", 1000)),
 		float32(conf.GetFloat("windHeight", 700))))
 
-	w.SetContent(makeTabs())
+	w.SetContent(makeTabs(w))
 	switch conf.Get("theme", "default") {
 	case "dark":
 		a.Settings().SetTheme(theme.DarkTheme())
@@ -32,10 +32,10 @@ func main() {
 	w.ShowAndRun()
 }
 
-func makeTabs() fyne.CanvasObject {
+func makeTabs(win fyne.Window) fyne.CanvasObject {
 	tabs := container.NewAppTabs(
 		container.NewTabItemWithIcon("Chat", theme.AccountIcon(), window.MakeChatWindow()),
-		container.NewTabItemWithIcon("Role", theme.DocumentPrintIcon(), window.MakeRoleWindow()),
+		container.NewTabItemWithIcon("Role", theme.DocumentPrintIcon(), window.MakeRoleWindow(win)),
 		container.NewTabItemWithIcon("Setting", theme.SettingsIcon(), window.MakeSettingWindow()),
 	)
 	return tabs

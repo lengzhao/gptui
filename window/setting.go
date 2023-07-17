@@ -119,21 +119,22 @@ func makeFormTab() fyne.CanvasObject {
 	}
 
 	label := widget.NewLabel("please restart to take effect")
+	label.TextStyle = fyne.TextStyle{Bold: true, Italic: true, Symbol: true}
 
 	form := &widget.Form{
 		Items: []*widget.FormItem{
-			{Text: "Theme", Widget: themeW, HintText: "App Theme"},
-			{Text: "Window Width", Widget: wWidth, HintText: "width of window"},
-			{Text: "Window Hight", Widget: wHeight, HintText: "height of window"},
-			{Text: "GPT Type", Widget: gptTypeW, HintText: "gpt type"},
-			{Text: "Openai Key", Widget: key1, HintText: "the key for openai api"},
-			{Text: "Azure Key", Widget: key2, HintText: "the key for azure api"},
+			{Text: "Theme", Widget: themeW},
+			{Text: "Window Width", Widget: wWidth},
+			{Text: "Window Hight", Widget: wHeight},
+			{Text: "GPT Type", Widget: gptTypeW},
+			{Text: "Openai Key", Widget: key1},
+			{Text: "Azure Key", Widget: key2},
 			{Text: "Azure Endpoint", Widget: azureEnd, HintText: "the endpoint for azure api"},
 			{Text: "Model", Widget: model, HintText: "the model for gpt"},
 			{Text: "Chat History Limit", Widget: historyLimit, HintText: "history limit, the history will send to gpt"},
 			{Text: "HTTPS Proxy", Widget: httpProxy, HintText: "the https proxy"},
 			{Text: "HTTP Timeout", Widget: timeout, HintText: "the http timeout"},
-			{Text: "Prompt Dir", Widget: prompt, HintText: "prompt dir, support .json and .csv"},
+			{Text: "Prompt Dir", Widget: prompt, HintText: "prompt dir, save customize prompt files(.json/.csv)."},
 			{Text: "Note", Widget: label},
 		},
 		OnSubmit: func() {

@@ -13,6 +13,7 @@ func makeHistoryBox() fyne.CanvasObject {
 	var history []string
 	dialog := widget.NewMultiLineEntry()
 	dialog.Wrapping = fyne.TextWrapWord
+	dialog.SetPlaceHolder("History")
 
 	event.RegistEvent(event.EAll, func(key event.EventID, info string) {
 		switch key {
@@ -39,7 +40,6 @@ func makeInputBox() fyne.CanvasObject {
 	entry := widget.NewMultiLineEntry()
 	entry.Wrapping = fyne.TextWrapBreak
 	entry.SetMinRowsVisible(5)
-	// entry.SetText("你好,世界!")
 
 	btn := widget.NewButton("Send!", func() {
 		if entry.Text == "" {
