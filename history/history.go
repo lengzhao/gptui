@@ -17,6 +17,9 @@ func (m *History) Add(role, text string) {
 		Role: role,
 		Text: text,
 	})
+	if len(m.items) > 10000 {
+		m.items = m.items[1:]
+	}
 }
 
 func (m *History) Get(limit int) []HistoryItem {

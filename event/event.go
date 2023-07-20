@@ -6,6 +6,7 @@ import (
 	"github.com/lengzhao/conf"
 )
 
+//go:generate stringer -type=EventID
 type EventID int
 type EventCb func(key EventID, info string)
 
@@ -20,6 +21,7 @@ const (
 	ESystemPrompt
 	ELoadPrompt
 	EChatEnable
+	EError
 	EAll
 )
 

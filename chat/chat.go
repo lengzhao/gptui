@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/lengzhao/conf"
+	"github.com/lengzhao/gptui/event"
 	"github.com/lengzhao/gptui/history"
 	"github.com/sashabaranov/go-openai"
 )
@@ -20,35 +21,38 @@ type Chat struct {
 	req          openai.ChatCompletionRequest
 }
 
-func newGPTClient() *openai.Client {
+func newGPTClient() (*openai.Client, error) {
 	var c openai.ClientConfig
 	if os.Getenv("gptType") == "azure" {
 		if os.Getenv("azureApiKey") == "" || os.Getenv("azureEndpoint") == "" {
 			log.Println("lost config:azureApiKey or azureEndpoint")
-			return nil
+			event.SendEvent(event.EError, "lost config:azureApiKey or azureEndpoint")
+			return nil, fmt.Errorf("lost config:azureApiKey or azureEndpoint")
 		}
 		c = openai.DefaultAzureConfig(os.Getenv("azureApiKey"), os.Getenv("azureEndpoint"))
 		// fmt.Println("use azure gpt")
 	} else {
 		if os.Getenv("gptType") != "openai" {
 			log.Println("unknow config:gptType")
-			return nil
+			event.SendEvent(event.EError, fmt.Sprintf("unknow config:gptType, %s", os.Getenv("gptType")))
+			return nil, fmt.Errorf("unknow config:gptType, %s", os.Getenv("gptType"))
 		}
 		if os.Getenv("OPENAI_API_KEY") == "" {
 			log.Println("lost config:OPENAI_API_KEY")
-			return nil
+			event.SendEvent(event.EError, "lost config:OPENAI_API_KEY")
+			return nil, fmt.Errorf("lost config:OPENAI_API_KEY")
 		}
 		c = openai.DefaultConfig(os.Getenv("OPENAI_API_KEY"))
 	}
 	c.HTTPClient = &http.Client{
 		Timeout: time.Duration(conf.GetInt("HTTP_TIMEOUT", 20)) * time.Second,
 	}
-	return openai.NewClientWithConfig(c)
+	return openai.NewClientWithConfig(c), nil
 }
 
 func New() *Chat {
-	client := newGPTClient()
-	if client == nil {
+	client, err := newGPTClient()
+	if err != nil {
 		return nil
 	}
 	return NewWithClient(client)

@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	fyne.io/fyne/v2 v2.3.5
-	github.com/lengzhao/conf v0.2.1
+	github.com/lengzhao/conf v0.2.2
 	github.com/lengzhao/font v0.1.0
 	github.com/sashabaranov/go-openai v1.14.0
 )

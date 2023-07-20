@@ -5,6 +5,8 @@ import (
 	"os"
 	"strconv"
 
+	_ "embed"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/widget"
 	"github.com/lengzhao/gptui/event"
@@ -12,24 +14,27 @@ import (
 
 type AppConfig struct {
 	Theme         string `json:"theme,omitempty"`
-	GPTType       string `json:"gptType,omitempty"`
-	AzureApiKey   string `json:"azureApiKey,omitempty"`
-	AzureEndpoint string `json:"azureEndpoint,omitempty"`
+	GPTType       string `json:"gptType"`
+	AzureApiKey   string `json:"azureApiKey"`
+	AzureEndpoint string `json:"azureEndpoint"`
 	Model         string `json:"model,omitempty"`
-	OpenaiApiKey  string `json:"OPENAI_API_KEY,omitempty"`
+	OpenaiApiKey  string `json:"OPENAI_API_KEY"`
 	HistoryLimit  int    `json:"HistoryLimit,omitempty"`
 	FyneFont      string `json:"FYNE_FONT,omitempty"`
 	HttpsProxy    string `json:"HTTPS_PROXY,omitempty"`
 	HttpTimeout   int    `json:"HTTP_TIMEOUT,omitempty"`
-	PromptsDir    string `json:"PROMPTS_DIR,omitempty"`
 	WindWidth     int    `json:"windWidth,omitempty"`
 	WindHeight    int    `json:"windHeight,omitempty"`
 	Prompt        string `json:"prompt,omitempty"`
 }
 
-var confFile string = "config.json"
+//go:generate sh -c "printf %s-%s $(git symbolic-ref HEAD | cut -b 12-) $(git describe --tags --abbrev=8 --dirty --always --long)> version.txt"
+
+//go:embed version.txt
+var version string
 
 func makeFormTab() fyne.CanvasObject {
+	var confFile string = "config.json"
 	var conf AppConfig = AppConfig{
 		Theme:         "default",
 		GPTType:       "openai",
@@ -37,7 +42,6 @@ func makeFormTab() fyne.CanvasObject {
 		AzureEndpoint: "https://openai-poc-instance-east-us.openai.azure.com",
 		HistoryLimit:  3,
 		HttpTimeout:   20,
-		PromptsDir:    "prompts",
 		WindWidth:     1000,
 		WindHeight:    800,
 	}
@@ -112,10 +116,11 @@ func makeFormTab() fyne.CanvasObject {
 	})
 	timeout.SetSelected(strconv.Itoa(conf.HttpTimeout))
 
-	prompt := widget.NewEntry()
-	prompt.SetText(conf.PromptsDir)
+	prompt := widget.NewMultiLineEntry()
+	prompt.Wrapping = fyne.TextWrapWord
+	prompt.SetText(conf.Prompt)
 	prompt.OnChanged = func(s string) {
-		conf.PromptsDir = s
+		conf.Prompt = s
 	}
 
 	label := widget.NewLabel("please restart to take effect")
@@ -123,6 +128,7 @@ func makeFormTab() fyne.CanvasObject {
 
 	form := &widget.Form{
 		Items: []*widget.FormItem{
+			{Text: "Version", Widget: widget.NewLabel(version)},
 			{Text: "Theme", Widget: themeW},
 			{Text: "Window Width", Widget: wWidth},
 			{Text: "Window Hight", Widget: wHeight},
@@ -134,7 +140,7 @@ func makeFormTab() fyne.CanvasObject {
 			{Text: "Chat History Limit", Widget: historyLimit, HintText: "history limit, the history will send to gpt"},
 			{Text: "HTTPS Proxy", Widget: httpProxy, HintText: "the https proxy"},
 			{Text: "HTTP Timeout", Widget: timeout, HintText: "the http timeout"},
-			{Text: "Prompt Dir", Widget: prompt, HintText: "prompt dir, save customize prompt files(.json/.csv)."},
+			{Text: "Prompt", Widget: prompt, HintText: "prompt for gpt"},
 			{Text: "Note", Widget: label},
 		},
 		OnSubmit: func() {

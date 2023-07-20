@@ -6,15 +6,20 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
 	"github.com/lengzhao/conf"
-	_ "github.com/lengzhao/conf/autoload"
 	_ "github.com/lengzhao/font/autoload"
-	"github.com/lengzhao/gptui/chat"
 	"github.com/lengzhao/gptui/window"
 )
 
 func main() {
 	a := app.New()
 	w := a.NewWindow("gpt")
+	fn := conf.LoadOneToENV()
+	if fn == "" {
+		a.SendNotification(&fyne.Notification{
+			Title:   "not found config file",
+			Content: "not found config file",
+		})
+	}
 	w.Resize(fyne.NewSize(float32(conf.GetFloat("windWidth", 1000)),
 		float32(conf.GetFloat("windHeight", 700))))
 
@@ -27,7 +32,6 @@ func main() {
 	default:
 		a.Settings().SetTheme(theme.DefaultTheme())
 	}
-	chat.StartWithEvent()
 
 	w.ShowAndRun()
 }
@@ -37,6 +41,7 @@ func makeTabs(win fyne.Window) fyne.CanvasObject {
 		container.NewTabItemWithIcon("Chat", theme.AccountIcon(), window.MakeChatWindow()),
 		container.NewTabItemWithIcon("Role", theme.DocumentPrintIcon(), window.MakeRoleWindow(win)),
 		container.NewTabItemWithIcon("Setting", theme.SettingsIcon(), window.MakeSettingWindow()),
+		container.NewTabItemWithIcon("Logger", theme.ContentClearIcon(), window.MakeLogListTab()),
 	)
 	return tabs
 }

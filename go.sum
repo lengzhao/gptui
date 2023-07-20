@@ -236,8 +236,8 @@ github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORN
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/lengzhao/conf v0.2.1 h1:QME0ls4RA0GthYgvCNd4JosdjxckTHdpQl0KWbS6dzc=
-github.com/lengzhao/conf v0.2.1/go.mod h1:ULO+bYrMzMpaKQqgcRCPvGWUno9ZLYNGxW1ozW250uU=
+github.com/lengzhao/conf v0.2.2 h1:lN+qz9X6xVfFUlJbblxukiW7LVowENad0jFAUyASPUA=
+github.com/lengzhao/conf v0.2.2/go.mod h1:ULO+bYrMzMpaKQqgcRCPvGWUno9ZLYNGxW1ozW250uU=
 github.com/lengzhao/font v0.1.0 h1:YHDh/YwDcoFCsICplTbMTZvzqHAokF9nEfBxLBhGoAk=
 github.com/lengzhao/font v0.1.0/go.mod h1:gD1uh4UajYAvPqN6Hb2F8tsnDdwP/R/6lexLU0d7aNg=
 github.com/lucor/goinfo v0.0.0-20200401173949-526b5363a13a/go.mod h1:ORP3/rB5IsulLEBwQZCJyyV6niqmI7P4EWSmkug+1Ng=

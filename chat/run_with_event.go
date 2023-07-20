@@ -8,7 +8,11 @@ import (
 )
 
 func StartWithEvent() error {
-	c := New()
+	client, err := newGPTClient()
+	if err != nil {
+		return err
+	}
+	c := NewWithClient(client)
 	if c == nil {
 		return fmt.Errorf("fail to new chat")
 	}
@@ -19,6 +23,7 @@ func StartWithEvent() error {
 			if len(info) == 0 {
 				break
 			}
+			event.SendEvent(event.EStartChat, info)
 			out, err := c.Send(info)
 			if err != nil {
 				event.SendEvent(event.EChatError, err.Error())
